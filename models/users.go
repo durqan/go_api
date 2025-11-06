@@ -12,6 +12,8 @@ type User struct {
 	Email      string    `json:"email" gorm:"type:varchar(100);uniqueIndex"`
 	Phone      string    `json:"phone" gorm:"type:varchar(100);uniqueIndex"`
 	Passport   Passport  `json:"passport,omitempty" gorm:"foreignKey:UserID"`
+	RegAddress Address   `json:"reg_address,omitempty" gorm:"foreignKey:UserID"`
+	ActAddress Address   `json:"act_address,omitempty" gorm:"foreignKey:UserID"`
 
 	CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime"`
 	UpdatedAt time.Time `json:"updated_at" gorm:"autoUpdateTime"`

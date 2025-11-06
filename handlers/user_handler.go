@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"test/dto/address"
 	"test/dto/passport"
 	"test/dto/user"
 	"test/models"
@@ -14,17 +15,20 @@ import (
 type UserHandler struct {
 	userRepo     *repository.UserRepository
 	passportRepo *repository.PassportRepository
+	addressRepo  *repository.AddressRepository
 	jwtService   *service.JWTService
 }
 
 func NewUserHandler(
 	userRepo *repository.UserRepository,
 	passportRepo *repository.PassportRepository,
+	addressRepo *repository.AddressRepository,
 	jwtService *service.JWTService,
 ) *UserHandler {
 	return &UserHandler{
 		userRepo:     userRepo,
 		passportRepo: passportRepo,
+		addressRepo:  addressRepo,
 		jwtService:   jwtService,
 	}
 }
@@ -96,8 +100,27 @@ func (h *UserHandler) AddPassport(c *gin.Context) {
 }
 
 func (h *UserHandler) AddAddresses(c *gin.Context) {
-	c.JSON(200, gin.H{
-		"message": "Contacts added successfully",
-		"data":    "Users list",
+	user := c.MustGet("user").(*models.User)
+	var request address.CreateAddressRequest
+
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Неверные данные: " + err.Error()})
+		return
+	}
+
+	addressModel, err := request.ToAddressModel(user.ID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := h.addressRepo.Create(&addressModel); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка при создании адреса"})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{
+		"message":  "Паспортные данные успешно добавлены",
+		"passport": addressModel,
 	})
 }

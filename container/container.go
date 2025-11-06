@@ -22,10 +22,11 @@ type MiddlewareContainer struct {
 func NewContainer(db *gorm.DB) *Container {
 	userRepo := repository.NewUserRepository(db)
 	passportRepo := repository.NewPassportRepository(db)
+	addressRepo := repository.NewAddressRepository(db)
 	jwtService := service.NewJWTService("123")
 
 	return &Container{
-		UserHandler: handlers.NewUserHandler(userRepo, passportRepo, jwtService),
+		UserHandler: handlers.NewUserHandler(userRepo, passportRepo, addressRepo, jwtService),
 		Middleware: &MiddlewareContainer{
 			JWTAuth: middleware.JWTAuth(jwtService, userRepo),
 		},
