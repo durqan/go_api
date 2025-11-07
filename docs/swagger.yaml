@@ -1,0 +1,181 @@
+definitions:
+  address.CreateAddressRequest:
+    properties:
+      City:
+        type: string
+      Full:
+        type: string
+      House:
+        type: string
+      Region:
+        type: string
+      Room:
+        type: string
+      Street:
+        type: string
+    required:
+    - City
+    - Full
+    - House
+    - Region
+    - Street
+    type: object
+  passport.CreatePassportRequest:
+    properties:
+      BirthPlace:
+        maxLength: 200
+        type: string
+      IssueDate:
+        type: string
+      IssueDepartment:
+        maxLength: 500
+        minLength: 5
+        type: string
+      Number:
+        type: string
+      Series:
+        type: string
+    required:
+    - IssueDate
+    - IssueDepartment
+    - Number
+    - Series
+    type: object
+  user.CreateUserRequest:
+    properties:
+      BirthDate:
+        type: string
+      Email:
+        type: string
+      Firstname:
+        maxLength: 100
+        minLength: 1
+        type: string
+      Lastname:
+        maxLength: 100
+        minLength: 1
+        type: string
+      Patronymic:
+        maxLength: 100
+        type: string
+      Phone:
+        type: string
+      Sex:
+        enum:
+        - male
+        - female
+        type: string
+    required:
+    - BirthDate
+    - Email
+    - Firstname
+    - Lastname
+    - Phone
+    - Sex
+    type: object
+info:
+  contact: {}
+paths:
+  /add_addresses:
+    post:
+      consumes:
+      - application/json
+      description: Add address information for authenticated user
+      parameters:
+      - description: Addresses data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/address.CreateAddressRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Address added successfully
+          schema:
+            type: object
+        "400":
+          description: Invalid request data
+          schema:
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Add addresses
+      tags:
+      - addresses
+  /add_contacts:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user with contact information
+      parameters:
+      - description: User with contacts data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/user.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User created successfully
+          schema:
+            type: object
+        "400":
+          description: Invalid request data
+          schema:
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            type: object
+      summary: Add user with contacts
+      tags:
+      - users
+  /add_passport:
+    post:
+      consumes:
+      - application/json
+      description: Add passport details for authenticated user
+      parameters:
+      - description: Passport data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/passport.CreatePassportRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Passport added successfully
+          schema:
+            type: object
+        "400":
+          description: Invalid request data
+          schema:
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Add passport information
+      tags:
+      - passport
+swagger: "2.0"

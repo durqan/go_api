@@ -4,6 +4,8 @@ import (
 	"log"
 	"test/database"
 
+	_ "test/docs"
+
 	_ "github.com/lib/pq"
 )
 

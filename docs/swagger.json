@@ -1,0 +1,272 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/add_addresses": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Add address information for authenticated user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "addresses"
+                ],
+                "summary": "Add addresses",
+                "parameters": [
+                    {
+                        "description": "Addresses data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/address.CreateAddressRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Address added successfully",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request data",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "/add_contacts": {
+            "post": {
+                "description": "Create a new user with contact information",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Add user with contacts",
+                "parameters": [
+                    {
+                        "description": "User with contacts data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.CreateUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "User created successfully",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request data",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "/add_passport": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Add passport details for authenticated user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "passport"
+                ],
+                "summary": "Add passport information",
+                "parameters": [
+                    {
+                        "description": "Passport data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/passport.CreatePassportRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Passport added successfully",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request data",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "address.CreateAddressRequest": {
+            "type": "object",
+            "required": [
+                "City",
+                "Full",
+                "House",
+                "Region",
+                "Street"
+            ],
+            "properties": {
+                "City": {
+                    "type": "string"
+                },
+                "Full": {
+                    "type": "string"
+                },
+                "House": {
+                    "type": "string"
+                },
+                "Region": {
+                    "type": "string"
+                },
+                "Room": {
+                    "type": "string"
+                },
+                "Street": {
+                    "type": "string"
+                }
+            }
+        },
+        "passport.CreatePassportRequest": {
+            "type": "object",
+            "required": [
+                "IssueDate",
+                "IssueDepartment",
+                "Number",
+                "Series"
+            ],
+            "properties": {
+                "BirthPlace": {
+                    "type": "string",
+                    "maxLength": 200
+                },
+                "IssueDate": {
+                    "type": "string"
+                },
+                "IssueDepartment": {
+                    "type": "string",
+                    "maxLength": 500,
+                    "minLength": 5
+                },
+                "Number": {
+                    "type": "string"
+                },
+                "Series": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.CreateUserRequest": {
+            "type": "object",
+            "required": [
+                "BirthDate",
+                "Email",
+                "Firstname",
+                "Lastname",
+                "Phone",
+                "Sex"
+            ],
+            "properties": {
+                "BirthDate": {
+                    "type": "string"
+                },
+                "Email": {
+                    "type": "string"
+                },
+                "Firstname": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 1
+                },
+                "Lastname": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 1
+                },
+                "Patronymic": {
+                    "type": "string",
+                    "maxLength": 100
+                },
+                "Phone": {
+                    "type": "string"
+                },
+                "Sex": {
+                    "type": "string",
+                    "enum": [
+                        "male",
+                        "female"
+                    ]
+                }
+            }
+        }
+    }
+}

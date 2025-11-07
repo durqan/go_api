@@ -33,6 +33,17 @@ func NewUserHandler(
 	}
 }
 
+// AddUserWithContacts godoc
+// @Summary Add user with contacts
+// @Description Create a new user with contact information
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param request body user.CreateUserRequest true "User with contacts data"
+// @Success 201 {object} object "User created successfully"
+// @Failure 400 {object} object "Invalid request data"
+// @Failure 500 {object} object "Internal server error"
+// @Router /add_contacts [post]
 func (h *UserHandler) AddUserWithContacts(c *gin.Context) {
 	var request user.CreateUserRequest
 
@@ -73,6 +84,19 @@ func (h *UserHandler) AddUserWithContacts(c *gin.Context) {
 	})
 }
 
+// AddPassport godoc
+// @Summary Add passport information
+// @Description Add passport details for authenticated user
+// @Tags passport
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param request body passport.CreatePassportRequest true "Passport data"
+// @Success 201 {object} object "Passport added successfully"
+// @Failure 400 {object} object "Invalid request data"
+// @Failure 401 {object} object "Unauthorized"
+// @Failure 500 {object} object "Internal server error"
+// @Router /add_passport [post]
 func (h *UserHandler) AddPassport(c *gin.Context) {
 	user := c.MustGet("user").(*models.User)
 	var request passport.CreatePassportRequest
@@ -99,6 +123,19 @@ func (h *UserHandler) AddPassport(c *gin.Context) {
 	})
 }
 
+// AddAddresses godoc
+// @Summary Add addresses
+// @Description Add address information for authenticated user
+// @Tags addresses
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param request body address.CreateAddressRequest true "Addresses data"
+// @Success 201 {object} object "Address added successfully"
+// @Failure 400 {object} object "Invalid request data"
+// @Failure 401 {object} object "Unauthorized"
+// @Failure 500 {object} object "Internal server error"
+// @Router /add_addresses [post]
 func (h *UserHandler) AddAddresses(c *gin.Context) {
 	user := c.MustGet("user").(*models.User)
 	var request address.CreateAddressRequest
@@ -108,11 +145,7 @@ func (h *UserHandler) AddAddresses(c *gin.Context) {
 		return
 	}
 
-	addressModel, err := request.ToAddressModel(user.ID)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+	addressModel := request.ToAddressModel(user.ID)
 
 	if err := h.addressRepo.Create(&addressModel); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка при создании адреса"})
@@ -120,7 +153,7 @@ func (h *UserHandler) AddAddresses(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"message":  "Паспортные данные успешно добавлены",
-		"passport": addressModel,
+		"message": "Адрес успешно добавлен",
+		"address": addressModel,
 	})
 }
