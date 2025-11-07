@@ -10,6 +10,8 @@ func AutoMigrateAll(db *gorm.DB) error {
 	models := []interface{}{
 		&models.User{},
 		&models.Passport{},
+		&models.Address{},
+		&models.Loans{},
 	}
 
 	return db.AutoMigrate(models...)

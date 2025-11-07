@@ -44,6 +44,7 @@ func startRouter() {
 		{
 			api.POST("/add_passport", container.UserHandler.AddPassport)
 			api.POST("/add_addresses", container.UserHandler.AddAddresses)
+			api.POST("/add_loan", container.LoanHandler.CreateLoan)
 		}
 	}
 
