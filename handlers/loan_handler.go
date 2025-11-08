@@ -60,7 +60,7 @@ func (h *LoanHandler) CreateLoan(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"message":  "Паспортные данные успешно добавлены",
+		"message":  "Заявка успешно добавлена",
 		"passport": loanModel,
 	})
 }

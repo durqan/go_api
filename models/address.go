@@ -5,6 +5,7 @@ import "time"
 type Address struct {
 	ID     uint   `json:"id" gorm:"primaryKey;autoIncrement"`
 	UserID uint   `json:"user_id" gorm:"not null;index"`
+	Type   string `json:"type" gorm:"type:varchar(50);not null;index"`
 	Full   string `json:"full" gorm:"type:varchar(255);not null"`
 	Region string `json:"region" gorm:"type:varchar(50);not null"`
 	City   string `json:"city" gorm:"type:varchar(50);not null"`
@@ -14,4 +15,17 @@ type Address struct {
 
 	CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime"`
 	UpdatedAt time.Time `json:"updated_at" gorm:"autoUpdateTime"`
+}
+
+const (
+	ContactTypeRegistration = "registration"
+	ContactTypeActual       = "actual"
+)
+
+func (ad *Address) IsValidType() bool {
+	validTypes := map[string]bool{
+		ContactTypeRegistration: true,
+		ContactTypeActual:       true,
+	}
+	return validTypes[ad.Type]
 }

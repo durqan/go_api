@@ -9,6 +9,7 @@ import (
 func AutoMigrateAll(db *gorm.DB) error {
 	models := []interface{}{
 		&models.User{},
+		&models.UserContact{},
 		&models.Passport{},
 		&models.Address{},
 		&models.Loans{},

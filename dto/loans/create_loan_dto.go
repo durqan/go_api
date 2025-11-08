@@ -5,8 +5,8 @@ import (
 )
 
 type CreateLoanRequest struct {
-	Sum  float64 `json:"Series" binding:"required,min=3000,max=30000"`
-	Term int     `json:"Number" binding:"required,min=1,max=28"`
+	Sum  float64 `json:"sum" binding:"required,min=3000,max=30000"`
+	Term int     `json:"term" binding:"required,min=1,max=28"`
 }
 
 func (r *CreateLoanRequest) ToLoanModel(userID uint) (models.Loans, error) {

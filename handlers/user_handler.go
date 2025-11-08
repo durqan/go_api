@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 	"test/dto/address"
+	"test/dto/contact"
 	"test/dto/passport"
 	"test/dto/user"
 	"test/models"
@@ -14,6 +15,7 @@ import (
 
 type UserHandler struct {
 	userRepo     *repository.UserRepository
+	contactRepo  *repository.ContactRepository
 	passportRepo *repository.PassportRepository
 	addressRepo  *repository.AddressRepository
 	jwtService   *service.JWTService
@@ -21,12 +23,14 @@ type UserHandler struct {
 
 func NewUserHandler(
 	userRepo *repository.UserRepository,
+	contactRepo *repository.ContactRepository,
 	passportRepo *repository.PassportRepository,
 	addressRepo *repository.AddressRepository,
 	jwtService *service.JWTService,
 ) *UserHandler {
 	return &UserHandler{
 		userRepo:     userRepo,
+		contactRepo:  contactRepo,
 		passportRepo: passportRepo,
 		addressRepo:  addressRepo,
 		jwtService:   jwtService,
@@ -45,7 +49,10 @@ func NewUserHandler(
 // @Failure 500 {object} object "Internal server error"
 // @Router /add_contacts [post]
 func (h *UserHandler) AddUserWithContacts(c *gin.Context) {
-	var request user.CreateUserRequest
+	var request struct {
+		User     user.CreateUserRequest         `json:"user" binding:"required"`
+		Contacts []contact.CreateContactRequest `json:"contacts"`
+	}
 
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -54,7 +61,7 @@ func (h *UserHandler) AddUserWithContacts(c *gin.Context) {
 		return
 	}
 
-	userModel, err := request.ToUserModel()
+	userModel, err := request.User.ToUserModel()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Неверный формат данных: " + err.Error(),
@@ -67,6 +74,20 @@ func (h *UserHandler) AddUserWithContacts(c *gin.Context) {
 			"error": "Ошибка при создании контакта: " + err.Error(),
 		})
 		return
+	}
+
+	for _, contactReq := range request.Contacts {
+		contact := models.UserContact{
+			UserID: userModel.ID,
+			Type:   contactReq.Type,
+			Value:  contactReq.Value,
+		}
+		if err := h.contactRepo.Create(&contact); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": "Ошибка при создании контакта: " + err.Error(),
+			})
+			return
+		}
 	}
 
 	token, err := h.jwtService.GenerateToken(userModel)
